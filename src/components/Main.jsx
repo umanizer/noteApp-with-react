@@ -1,14 +1,21 @@
 import React from "react";
 import "./Main.css";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
+import { useDispatch } from "react-redux";
+import { onUpdateNote } from "../store/modules/notes";
 
-const Main = ({ activeNote, onUpdateNote }) => {
+const Main = ({ activeNote }) => {
+  const dispatch = useDispatch();
+
   if (!activeNote) {
     return <div className="no-active-note">ノートが選択されていません</div>;
   }
 
   const onEditNote = (key, value) => {
-    onUpdateNote({ ...activeNote, [key]: value, modDate: Date.now() });
+    // const editNote = { ...activeNote, [key]: value, modDate: Date.now() };
+    dispatch(
+      onUpdateNote({ ...activeNote, [key]: value, modDate: Date.now() })
+    );
   };
 
   return (

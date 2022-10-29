@@ -1,23 +1,21 @@
 import React from "react";
 import "./Sidebar.css";
+import { useSelector, useDispatch } from "react-redux";
+import { onAddNote, sortNotes, deleteNote } from "../store/modules/notes";
 
-const Sidebar = ({
-  onAddNote,
-  notes,
-  deleteNote,
-  activeNote,
-  setActiveNote,
-}) => {
-  const sortedNotes = notes.sort((a, b) => b.modDate - a.modDate);
+const Sidebar = ({ activeNote, setActiveNote }) => {
+  const notes = useSelector((state) => state.notes);
+  const dispatch = useDispatch();
+  dispatch(sortNotes());
 
   return (
     <div className="app-sidebar">
       <div className="app-sidebar-header">
         <h1>ノート</h1>
-        <button onClick={onAddNote}>追加</button>
+        <button onClick={() => dispatch(onAddNote())}>追加</button>
       </div>
       <div className="app-sidebar-notes">
-        {sortedNotes.map((note) => (
+        {notes.map((note) => (
           <div
             className={`app-sidebar-note ${note.id === activeNote && "active"}`}
             key={note.id}
@@ -25,7 +23,9 @@ const Sidebar = ({
           >
             <div className="sidebar-note-title">
               <strong>{note.title}</strong>
-              <button onClick={() => deleteNote(note.id)}>削除</button>
+              <button onClick={() => dispatch(deleteNote(note.id))}>
+                削除
+              </button>
             </div>
             <p>{note.content}</p>
             <small>

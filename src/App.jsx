@@ -2,27 +2,11 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import SideBar from "./components/Sidebar";
 import Main from "./components/Main";
-import uuid from "react-uuid";
+import { useSelector } from "react-redux";
 
 function App() {
-  const [notes, setNotes] = useState(
-    JSON.parse(localStorage.getItem("notes")) || []
-  );
+  const notes = useSelector((state) => state.notes);
   const [activeNote, setActiveNote] = useState(false);
-
-  const onAddNote = () => {
-    const newNote = {
-      id: uuid(),
-      title: "新しいノート",
-      content: "",
-      modDate: Date.now(),
-    };
-    setNotes([...notes, newNote]);
-  };
-
-  const deleteNote = (id) => {
-    setNotes(notes.filter((note) => note.id !== id));
-  };
 
   const getActiveNote = () => {
     return notes.find((note) => {
@@ -30,12 +14,7 @@ function App() {
     });
   };
 
-  const onUpdateNote = (updatedNote) => {
-    const updateNotesArray = notes.map((note) =>
-      note.id === updatedNote.id ? updatedNote : note
-    );
-    setNotes(updateNotesArray);
-  };
+
   useEffect(() => {
     const jsonNotes = JSON.stringify(notes);
     localStorage.setItem("notes", jsonNotes);
@@ -47,14 +26,8 @@ function App() {
 
   return (
     <div className="App">
-      <SideBar
-        onAddNote={onAddNote}
-        notes={notes}
-        deleteNote={deleteNote}
-        activeNote={activeNote}
-        setActiveNote={setActiveNote}
-      ></SideBar>
-      <Main activeNote={getActiveNote()} onUpdateNote={onUpdateNote}></Main>
+      <SideBar activeNote={activeNote} setActiveNote={setActiveNote}></SideBar>
+      <Main activeNote={getActiveNote()} ></Main>
     </div>
   );
 }
